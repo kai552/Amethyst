@@ -73,15 +73,15 @@ void UI::onCategoryButtonPressed(CCObject* sender) {
 
 std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
     if (categoryStr == "Player") {
-        return { "Speed Hack", "Noclip", "Jump Hack", "Auto Jump" };
+        return { "1", "2", "3", "4" };
     } else if (categoryStr == "Creator") {
-        return { "No Clip", "Free Zoom", "Grid Snap", "Object Limit Bypass" };
+        return { "5", "6" };
     } else if (categoryStr == "Misc") {
-        return { "Show Hitboxes", "Practice Music", "No Death Effect", "Instant Complete", "Unlock All", "Auto Song Download" };
+        return { "7" };
     } else if (categoryStr == "Cosmetic") {
-        return { "Rainbow Icon", "Custom Wave Trail", "Hide Player", "Custom Colors" };
+        return { "8" };
     } else if (categoryStr == "Settings") {
-        return { "Enable Notifications", "Auto Save", "Debug Mode" };
+        return { "9", "10", "11" };
     } else if (categoryStr == "Credits") {
         return { "Nothing Here." };
     }
