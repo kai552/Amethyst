@@ -48,12 +48,12 @@ bool SettingsManager::IfFloatset(const std::string& settingName) {
 
 void SettingsManager::saveAll() {
     for (auto& pair : settings) {
-        Mod::get()->setSavedValue<bool>(pair.first, pair.second);
+        (void)Mod::get()->setSavedValue<bool>(pair.first, pair.second);
     }
     for (auto& pair : floatSettings) {
-        Mod::get()->setSavedValue<float>(pair.first + "_float", pair.second);
+        (void)Mod::get()->setSavedValue<float>(pair.first + "_float", pair.second);
     }
-    Mod::get()->saveData();
+    (void)Mod::get()->saveData();
 }
 
 SolidWave* SolidWave::get() {
