@@ -69,12 +69,8 @@ bool UI::setup() {
     m_bottomButtonsMenu->setContentSize({popupSize.width, 25.f});
     m_mainLayer->addChildAtPosition(m_bottomButtonsMenu, Anchor::Bottom, {0.f, 20.f});
     
-    auto clipSize = CCSize{popupSize.width - 20.f, popupSize.height - 80.f};
-    auto stencil = CCDrawNode::create();
-    stencil->drawSolidRect({0, 0}, {clipSize.width, clipSize.height}, ccc4f(1, 1, 1, 1));
-    
-    m_scrollView = CCClippingNode::create(stencil);
-    m_scrollView->setContentSize(clipSize);
+    m_scrollView = CCNode::create();
+    m_scrollView->setContentSize({popupSize.width - 20.f, popupSize.height - 80.f});
     m_mainLayer->addChildAtPosition(m_scrollView, Anchor::Center, {0.f, 10.f});
     
     m_contentMenu = CCMenu::create();
