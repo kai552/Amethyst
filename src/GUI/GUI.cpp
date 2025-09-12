@@ -1,5 +1,4 @@
 #include <Geode/Geode.hpp>
-#include <Geode/ui/ScrollLayer.hpp>
 #include "GUI.hpp"
 using namespace geode::prelude;
 
@@ -70,7 +69,9 @@ bool UI::setup() {
     m_bottomButtonsMenu->setContentSize({popupSize.width, 25.f});
     m_mainLayer->addChildAtPosition(m_bottomButtonsMenu, Anchor::Bottom, {0.f, 20.f});
     
-    m_scrollView = ScrollLayer::create({popupSize.width - 20.f, popupSize.height - 80.f});
+    // Use CCScrollView with proper parameters
+    m_scrollView = CCScrollView::create({popupSize.width - 20.f, popupSize.height - 80.f}, nullptr);
+    m_scrollView->setDirection(kCCScrollViewDirectionVertical);
     m_mainLayer->addChildAtPosition(m_scrollView, Anchor::Center, {0.f, 10.f});
     
     m_contentMenu = CCMenu::create();
@@ -240,9 +241,9 @@ void UI::setupCategoryContent(const std::string& category) {
     m_contentMenu->setContentSize({350.f, (float)(elements.size() * 40)});
     m_contentMenu->updateLayout();
     
-    m_scrollView->m_contentLayer->setContentSize(m_contentMenu->getContentSize());
-    m_scrollView->m_contentLayer->addChild(m_contentMenu);
-    m_scrollView->moveToTop();
+    // For CCScrollView, set content size and add to container
+    m_scrollView->setContentSize(m_contentMenu->getContentSize());
+    m_scrollView->addChild(m_contentMenu);
 }
 
 void UI::onButtonPressed(CCObject* sender) {
@@ -270,7 +271,7 @@ void UI::onFloatButtonPressed(CCObject* sender) {
 
 void UI::clearContent() {
     if (m_contentMenu) {
-        m_scrollView->m_contentLayer->removeChild(m_contentMenu);
+        m_scrollView->removeChild(m_contentMenu);
         m_contentMenu = CCMenu::create();
         m_contentMenu->setLayout(ColumnLayout::create()
             ->setAxisAlignment(AxisAlignment::Start)
