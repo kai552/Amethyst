@@ -13,35 +13,75 @@ private:
     SettingsManager() = default;
 
 public:
-    static SettingsManager* get() {
-        if (!instance) {
-            instance = new SettingsManager();
+    static SettingsManager* get();
+    bool getIfEnabled(const std::string& settingName);
+    void setEnabled(const std::string& settingName, bool enabled);
+    void toggle(const std::string& settingName);
+    void saveAll();
+};
+
+class SolidWave {
+public:
+    static SolidWave* get();
+    bool getIfEnabled();
+    void setEnabled(bool enabled);
+    void toggle();
+};
+
+class SpeedHack {
+public:
+    static SpeedHack* get();
+    bool getIfEnabled();
+    void setEnabled(bool enabled);
+    void toggle();
+};
+
+class Noclip {
+public:
+    static Noclip* get();
+    bool getIfEnabled();
+    void setEnabled(bool enabled);
+    void toggle();
+};
+
+enum class Category {
+    Player,
+    Creator,
+    Misc,
+    Cosmetic,
+    Settings,
+    Credits
+};
+
+class UI : public geode::Popup<> {
+protected:
+    CCMenu* m_bottomButtonsMenu;
+    CCScrollView* m_scrollView;
+    CCMenu* m_contentMenu;
+    std::string m_currentCategory;
+
+    bool setup() override;
+    void onExit() override;
+
+    void addDefaultUICategoryButton(const std::string& category);
+    void addLabel(const std::string& category);
+    void onCategoryButtonPressed(CCObject* sender);
+    void onCheckboxToggled(CCObject* sender);
+    void setupCategoryContent(const std::string& category);
+    void clearContent();
+    
+    void saveCheckboxState(const std::string& key, bool value);
+    bool loadCheckboxState(const std::string& key, bool defaultValue = false);
+    void saveAllStates();
+    std::vector<std::string> getCategoryFields(const std::string& categoryStr);
+public:
+    static UI* create() {
+        auto ret = new UI();
+        if (ret && ret->initAnchored(440.f, 250.f)) {
+            ret->autorelease();
+            return ret;
         }
-        return instance;
-    }
-    
-    bool getIfEnabled(const std::string& settingName) {
-        auto it = settings.find(settingName);
-        if (it != settings.end()) {
-            return it->second;
-        }
-        return Mod::get()->getSavedValue<bool>(settingName, false);
-    }
-    
-    void setEnabled(const std::string& settingName, bool enabled) {
-        settings[settingName] = enabled;
-        Mod::get()->setSavedValue<bool>(settingName, enabled);
-    }
-    
-    void toggle(const std::string& settingName) {
-        bool current = getIfEnabled(settingName);
-        setEnabled(settingName, !current);
-    }
-    
-    void saveAll() {
-        for (auto& pair : settings) {
-            Mod::get()->setSavedValue<bool>(pair.first, pair.second);
-        }
-        Mod::get()->saveData();
+        delete ret;
+        return nullptr;
     }
 };
