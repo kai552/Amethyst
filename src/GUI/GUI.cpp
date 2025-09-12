@@ -242,9 +242,9 @@ void UI::onButtonPressed(CCObject* sender) {
     std::string key = keyStr->getCString();
     
     if (key == "Credits1") {
-        FLAlertLayer::create("Credits", "Created by: Your Name", "OK")->show();
+        FLAlertLayer::create("Credits", "Created by: Kai552", "OK")->show();
     } else if (key == "Credits2") {
-        FLAlertLayer::create("Thanks", "Special thanks to the community!", "OK")->show();
+        FLAlertLayer::create("Thanks", "Special thanks to Speedyfriend67", "OK")->show();
     } else if (key == "Credits3") {
         FLAlertLayer::create("Version", "Version 1.0.0", "OK")->show();
     }
