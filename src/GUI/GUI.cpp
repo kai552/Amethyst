@@ -154,17 +154,15 @@ void UI::onCategoryButtonPressed(CCObject* sender) {
 
 std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
     if (categoryStr == "Player") {
-        return { "Speed Hack", "Noclip", "Jump Hack", "Auto Jump" };
+        return { "Noclip", "Jump Hack", "Ignore Inputs" };
     } else if (categoryStr == "Creator") {
-        return { "No Clip", "Free Zoom", "Grid Snap", "Object Limit Bypass" };
+        return { "Custom Objects Bypass", "Copy Hack", "Level Edit" };
     } else if (categoryStr == "Misc") {
-        return { "Show Hitboxes", "Practice Music", "No Death Effect", "Instant Complete", "Unlock All", "Auto Song Download" };
+        return { "Show Hitboxes", "Speedhack", "No Death Effect", "Instant Complete", "Unlock All Icons" };
     } else if (categoryStr == "Cosmetic") {
-        return { "Rainbow Icon", "Custom Wave Trail", "Hide Player", "Custom Colors" };
-    } else if (categoryStr == "Settings") {
-        return { "Enable Notifications", "Auto Save", "Debug Mode" };
+        return { "Rainbow Icon", "Solid Wave Trail" };
     } else if (categoryStr == "Credits") {
-        return { "Nothing Here." };
+        return { "Kai552" };
     }
     return { "Nothing Here." };
 }
