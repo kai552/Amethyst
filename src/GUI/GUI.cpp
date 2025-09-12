@@ -154,17 +154,17 @@ void UI::onCategoryButtonPressed(CCObject* sender) {
 
 std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
     if (categoryStr == "Player") {
-        return { "Noclip", "Jump Hack" };
+        return { "Speed Hack", "Noclip", "Jump Hack", "Auto Jump" };
     } else if (categoryStr == "Creator") {
-        return { "Copy Hack" };
+        return { "No Clip", "Free Zoom", "Grid Snap", "Object Limit Bypass" };
     } else if (categoryStr == "Misc") {
-        return { "Show Hitboxes", "Practice Music Bypass" };
+        return { "Show Hitboxes", "Practice Music", "No Death Effect", "Instant Complete", "Unlock All", "Auto Song Download" };
     } else if (categoryStr == "Cosmetic") {
-        return { "Rainbow Icon" };
+        return { "Rainbow Icon", "Custom Wave Trail", "Hide Player", "Custom Colors" };
     } else if (categoryStr == "Settings") {
-        return { "PlaceHolder" };
+        return { "Enable Notifications", "Auto Save", "Debug Mode" };
     } else if (categoryStr == "Credits") {
-        return { "Kai" };
+        return { "Nothing Here." };
     }
     return { "Nothing Here." };
 }
@@ -172,11 +172,10 @@ std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
 void UI::setupCategoryContent(const std::string& category) {
     clearContent();
     
-    std::vector<std::string> fields = getCategoryFields(category);
+    std::vector<UIElement> elements = getCategoryElements(category);
     
-    for (size_t i = 0; i < fields.size(); i++) {
-        std::string labelText = fields[i];
-        std::string checkboxKey = category + "Checkbox" + std::to_string(i);
+    for (size_t i = 0; i < elements.size(); i++) {
+        auto element = elements[i];
         
         auto container = CCMenu::create();
         container->setLayout(RowLayout::create()
@@ -184,29 +183,82 @@ void UI::setupCategoryContent(const std::string& category) {
             ->setGap(10.f));
         container->setContentSize({350.f, 30.f});
         
-        auto checkbox = CCMenuItemToggler::createWithStandardSprites(
-            this,
-            menu_selector(UI::onCheckboxToggled),
-            0.8f
-        );
-        checkbox->toggle(loadCheckboxState(checkboxKey));
-        checkbox->setUserObject(CCString::create(checkboxKey));
+        if (element.type == UIElementType::Checkbox) {
+            auto checkbox = CCMenuItemToggler::createWithStandardSprites(
+                this,
+                menu_selector(UI::onCheckboxToggled),
+                0.8f
+            );
+            checkbox->toggle(loadCheckboxState(element.key));
+            checkbox->setUserObject(CCString::create(element.key));
+            container->addChild(checkbox);
+            
+        } else if (element.type == UIElementType::Button) {
+            auto button = CCMenuItemSpriteExtra::create(
+                CCSprite::createWithSpriteFrameName("GJ_button_01.png"),
+                this,
+                menu_selector(UI::onButtonPressed)
+            );
+            button->setScale(0.6f);
+            button->setUserObject(CCString::create(element.key));
+            container->addChild(button);
+            
+        } else if (element.type == UIElementType::Float) {
+            auto checkbox = CCMenuItemToggler::createWithStandardSprites(
+                this,
+                menu_selector(UI::onCheckboxToggled),
+                0.8f
+            );
+            checkbox->toggle(loadCheckboxState(element.key));
+            checkbox->setUserObject(CCString::create(element.key));
+            container->addChild(checkbox);
+            
+            auto plusBtn = CCMenuItemSpriteExtra::create(
+                CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png"),
+                this,
+                menu_selector(UI::onFloatButtonPressed)
+            );
+            plusBtn->setScale(0.6f);
+            plusBtn->setUserObject(CCString::create(element.key));
+            container->addChild(plusBtn);
+        }
         
-        auto label = CCLabelBMFont::create(labelText.c_str(), "bigFont.fnt");
+        auto label = CCLabelBMFont::create(element.name.c_str(), "bigFont.fnt");
         label->setScale(0.6f);
-        
-        container->addChild(checkbox);
         container->addChild(label);
-        container->updateLayout();
         
+        container->updateLayout();
         m_contentMenu->addChild(container);
     }
     
-    m_contentMenu->setContentSize({350.f, (float)(fields.size() * 40)});
+    m_contentMenu->setContentSize({350.f, (float)(elements.size() * 40)});
     m_contentMenu->updateLayout();
     
     m_scrollView->setContentSize(m_contentMenu->getContentSize());
     m_scrollView->addChild(m_contentMenu);
+}
+
+void UI::onButtonPressed(CCObject* sender) {
+    auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
+    auto keyStr = static_cast<CCString*>(button->getUserObject());
+    std::string key = keyStr->getCString();
+    
+    if (key == "Credits1") {
+        FLAlertLayer::create("Credits", "Created by: Your Name", "OK")->show();
+    } else if (key == "Credits2") {
+        FLAlertLayer::create("Thanks", "Special thanks to the community!", "OK")->show();
+    } else if (key == "Credits3") {
+        FLAlertLayer::create("Version", "Version 1.0.0", "OK")->show();
+    }
+}
+
+void UI::onFloatButtonPressed(CCObject* sender) {
+    auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
+    auto keyStr = static_cast<CCString*>(button->getUserObject());
+    std::string key = keyStr->getCString();
+    
+    auto popup = FloatConfigPopup::create(key);
+    popup->show();
 }
 
 void UI::clearContent() {
