@@ -162,11 +162,10 @@ std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
     } else if (categoryStr == "Cosmetic") {
         return { "Rainbow Icon", "Solid Wave Trail" };
     } else if (categoryStr == "Credits") {
-        return { "Kai552" };
+        return { "Nothing Here." };
     }
     return { "Nothing Here." };
 }
-
 void UI::setupCategoryContent(const std::string& category) {
     clearContent();
     
@@ -242,13 +241,13 @@ void UI::onButtonPressed(CCObject* sender) {
     std::string key = keyStr->getCString();
     
     if (key == "Credits1") {
-        FLAlertLayer::create("Credits", "Created by: Kai552", "OK")->show();
-    } else if (key == "Credits2") {
-        FLAlertLayer::create("Thanks", "Special thanks to Speedyfriend67", "OK")->show();
-    } else if (key == "Credits3") {
-        FLAlertLayer::create("Version", "Version 1.0.0", "OK")->show();
-    }
-}
+         FLAlertLayer::create("Credits", "Created by: Kai552", "OK")->show();
+     } else if (key == "Credits2") {
+         FLAlertLayer::create("Thanks", "Special thanks to Speedyfriend67", "OK")->show();
+     } else if (key == "Credits3") {
+         FLAlertLayer::create("Version", "Version 1.0.0", "OK")->show();
+     }
+ }
 
 void UI::onFloatButtonPressed(CCObject* sender) {
     auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
@@ -287,5 +286,5 @@ bool UI::loadCheckboxState(const std::string& key, bool defaultValue) {
 }
 
 void UI::saveAllStates() {
-    Mod::get()->saveData();
+    (void)Mod::get()->saveData();
 }
