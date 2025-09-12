@@ -19,12 +19,12 @@ struct UIElement {
     std::string key;
 };
 
-class FloatConfigPopup : public geode::Popup<> {
+class FloatConfigPopup : public geode::Popup<std::string> {
 protected:
     std::string m_settingKey;
     CCTextInputNode* m_input;
     
-    bool setup(const std::string& settingKey) override;
+    bool setup(std::string settingKey) override;
     void onSave(CCObject* sender);
     void onCancel(CCObject* sender);
     
