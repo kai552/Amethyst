@@ -35,7 +35,7 @@ public:
 class UI : public geode::Popup<> {
 protected:
     CCMenu* m_bottomButtonsMenu;
-    CCScrollView* m_scrollView;
+    CCNode* m_scrollView;
     CCMenu* m_contentMenu;
     std::string m_currentCategory;
 
