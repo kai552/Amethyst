@@ -54,6 +54,7 @@ protected:
     bool loadCheckboxState(const std::string& key, bool defaultValue = false);
     void saveAllStates();
     std::vector<UIElement> getCategoryElements(const std::string& categoryStr);
+    std::vector<std::string> getCategoryFields(const std::string& categoryStr);
     
 public:
     static UI* create() {
