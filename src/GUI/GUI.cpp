@@ -4,91 +4,65 @@ using namespace geode::prelude;
 
 bool imguiThemeEnabled = Mod::get()->getSavedValue<bool>("imguiThemeEnabled", false);
 
-SettingsManager* SettingsManager::instance = nullptr;
+// FloatConfigPopup implementation (you'll need to add this)
+bool FloatConfigPopup::setup(std::string settingKey) {
+    m_settingKey = settingKey;
+    
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    this->setTitle("Configure " + settingKey);
+    
+    m_input = CCTextInputNode::create(100.f, 30.f, "1.0", "Thonburi");
+    m_input->setLabelPlaceholderColor(ccc3(120, 120, 120));
+    m_input->setMaxLabelScale(0.8f);
+    
+    float currentValue = SettingsManager::get()->getFloatValue(settingKey);
+    m_input->setString(std::to_string(currentValue).c_str());
+    
+    this->m_mainLayer->addChildAtPosition(m_input, Anchor::Center, {0, 20});
+    
+    auto saveBtn = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_button_01.png"),
+        this,
+        menu_selector(FloatConfigPopup::onSave)
+    );
+    
+    auto cancelBtn = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_button_06.png"),
+        this,
+        menu_selector(FloatConfigPopup::onCancel)
+    );
+    
+    auto menu = CCMenu::create();
+    menu->addChild(saveBtn);
+    menu->addChild(cancelBtn);
+    menu->setLayout(RowLayout::create()->setGap(20.f));
+    this->m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, -30});
+    
+    return true;
+}
 
-SettingsManager* SettingsManager::get() {
-    if (!instance) {
-        instance = new SettingsManager();
+FloatConfigPopup* FloatConfigPopup::create(const std::string& settingKey) {
+    auto ret = new FloatConfigPopup();
+    if (ret && ret->initAnchored(200.f, 150.f, settingKey)) {
+        ret->autorelease();
+        return ret;
     }
-    return instance;
+    delete ret;
+    return nullptr;
 }
 
-bool SettingsManager::getIfEnabled(const std::string& settingName) {
-    auto it = settings.find(settingName);
-    if (it != settings.end()) {
-        return it->second;
-    }
-    return Mod::get()->getSavedValue<bool>(settingName, false);
+void FloatConfigPopup::onSave(CCObject* sender) {
+    std::string valueStr = m_input->getString();
+    float value = std::stof(valueStr);
+    SettingsManager::get()->setFloatValue(m_settingKey, value);
+    this->onClose(sender);
 }
 
-void SettingsManager::setEnabled(const std::string& settingName, bool enabled) {
-    settings[settingName] = enabled;
-    Mod::get()->setSavedValue<bool>(settingName, enabled);
+void FloatConfigPopup::onCancel(CCObject* sender) {
+    this->onClose(sender);
 }
 
-void SettingsManager::toggle(const std::string& settingName) {
-    bool current = getIfEnabled(settingName);
-    setEnabled(settingName, !current);
-}
-
-void SettingsManager::saveAll() {
-    for (auto& pair : settings) {
-        Mod::get()->setSavedValue<bool>(pair.first, pair.second);
-    }
-    Mod::get()->saveData();
-}
-
-SolidWave* SolidWave::get() {
-    static SolidWave instance;
-    return &instance;
-}
-
-bool SolidWave::getIfEnabled() {
-    return SettingsManager::get()->getIfEnabled("SolidWave");
-}
-
-void SolidWave::setEnabled(bool enabled) {
-    SettingsManager::get()->setEnabled("SolidWave", enabled);
-}
-
-void SolidWave::toggle() {
-    SettingsManager::get()->toggle("SolidWave");
-}
-
-SpeedHack* SpeedHack::get() {
-    static SpeedHack instance;
-    return &instance;
-}
-
-bool SpeedHack::getIfEnabled() {
-    return SettingsManager::get()->getIfEnabled("SpeedHack");
-}
-
-void SpeedHack::setEnabled(bool enabled) {
-    SettingsManager::get()->setEnabled("SpeedHack", enabled);
-}
-
-void SpeedHack::toggle() {
-    SettingsManager::get()->toggle("SpeedHack");
-}
-
-Noclip* Noclip::get() {
-    static Noclip instance;
-    return &instance;
-}
-
-bool Noclip::getIfEnabled() {
-    return SettingsManager::get()->getIfEnabled("Noclip");
-}
-
-void Noclip::setEnabled(bool enabled) {
-    SettingsManager::get()->setEnabled("Noclip", enabled);
-}
-
-void Noclip::toggle() {
-    SettingsManager::get()->toggle("Noclip");
-}
-
+// UI class implementation
 bool UI::setup() {
     auto popupSize = this->getContentSize();
     
@@ -152,6 +126,42 @@ void UI::onCategoryButtonPressed(CCObject* sender) {
     setupCategoryContent(category);
 }
 
+std::vector<UIElement> UI::getCategoryElements(const std::string& categoryStr) {
+    if (categoryStr == "Player") {
+        return { 
+            {"Noclip", UIElementType::Checkbox, "Noclip"},
+            {"Jump Hack", UIElementType::Checkbox, "JumpHack"},
+            {"Ignore Inputs", UIElementType::Checkbox, "IgnoreInputs"}
+        };
+    } else if (categoryStr == "Creator") {
+        return { 
+            {"Custom Objects Bypass", UIElementType::Checkbox, "CustomObjectsBypass"},
+            {"Copy Hack", UIElementType::Checkbox, "CopyHack"},
+            {"Level Edit", UIElementType::Checkbox, "LevelEdit"}
+        };
+    } else if (categoryStr == "Misc") {
+        return { 
+            {"Show Hitboxes", UIElementType::Checkbox, "ShowHitboxes"},
+            {"Speedhack", UIElementType::Float, "SpeedHack"},
+            {"No Death Effect", UIElementType::Checkbox, "NoDeathEffect"},
+            {"Instant Complete", UIElementType::Checkbox, "InstantComplete"},
+            {"Unlock All Icons", UIElementType::Checkbox, "UnlockAllIcons"}
+        };
+    } else if (categoryStr == "Cosmetic") {
+        return { 
+            {"Rainbow Icon", UIElementType::Checkbox, "RainbowIcon"},
+            {"Solid Wave Trail", UIElementType::Float, "SolidWave"}
+        };
+    } else if (categoryStr == "Credits") {
+        return { 
+            {"Created by Kai552", UIElementType::Button, "Credits1"},
+            {"Thanks to Speedyfriend67", UIElementType::Button, "Credits2"},
+            {"Version 1.0.0", UIElementType::Button, "Credits3"}
+        };
+    }
+    return {};
+}
+
 std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
     if (categoryStr == "Player") {
         return { "Noclip", "Jump Hack", "Ignore Inputs" };
@@ -166,6 +176,7 @@ std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
     }
     return { "Nothing Here." };
 }
+
 void UI::setupCategoryContent(const std::string& category) {
     clearContent();
     
