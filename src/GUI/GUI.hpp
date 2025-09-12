@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
-#include "../../Client.hpp"
+#include "../Client/Client.hpp"
 using namespace geode::prelude;
 
 enum class UIElementType {
