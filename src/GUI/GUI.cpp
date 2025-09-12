@@ -60,6 +60,7 @@ void FloatConfigPopup::onSave(CCObject* sender) {
 void FloatConfigPopup::onCancel(CCObject* sender) {
     this->onClose(sender);
 }
+
 bool UI::setup() {
     auto popupSize = this->getContentSize();
     
