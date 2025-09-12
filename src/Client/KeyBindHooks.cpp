@@ -1,4 +1,5 @@
 #ifndef GEODE_IS_IOS
+#include "../GUI/GUI.hpp"
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
 class $modify(AmethystUIHook, cocos2d::CCKeyboardDispatcher) {
     bool dispatchKeyboardMSG(cocos2d::enumKeyCodes key, bool isKeyDown, bool isKeyRepeat) {
