@@ -4,7 +4,6 @@ using namespace geode::prelude;
 
 bool imguiThemeEnabled = Mod::get()->getSavedValue<bool>("imguiThemeEnabled", false);
 
-// FloatConfigPopup implementation (you'll need to add this)
 bool FloatConfigPopup::setup(std::string settingKey) {
     m_settingKey = settingKey;
     
@@ -62,7 +61,6 @@ void FloatConfigPopup::onCancel(CCObject* sender) {
     this->onClose(sender);
 }
 
-// UI class implementation
 bool UI::setup() {
     auto popupSize = this->getContentSize();
     
