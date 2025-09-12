@@ -4,6 +4,91 @@ using namespace geode::prelude;
 
 bool imguiThemeEnabled = Mod::get()->getSavedValue<bool>("imguiThemeEnabled", false);
 
+SettingsManager* SettingsManager::instance = nullptr;
+
+SettingsManager* SettingsManager::get() {
+    if (!instance) {
+        instance = new SettingsManager();
+    }
+    return instance;
+}
+
+bool SettingsManager::getIfEnabled(const std::string& settingName) {
+    auto it = settings.find(settingName);
+    if (it != settings.end()) {
+        return it->second;
+    }
+    return Mod::get()->getSavedValue<bool>(settingName, false);
+}
+
+void SettingsManager::setEnabled(const std::string& settingName, bool enabled) {
+    settings[settingName] = enabled;
+    Mod::get()->setSavedValue<bool>(settingName, enabled);
+}
+
+void SettingsManager::toggle(const std::string& settingName) {
+    bool current = getIfEnabled(settingName);
+    setEnabled(settingName, !current);
+}
+
+void SettingsManager::saveAll() {
+    for (auto& pair : settings) {
+        Mod::get()->setSavedValue<bool>(pair.first, pair.second);
+    }
+    Mod::get()->saveData();
+}
+
+SolidWave* SolidWave::get() {
+    static SolidWave instance;
+    return &instance;
+}
+
+bool SolidWave::getIfEnabled() {
+    return SettingsManager::get()->getIfEnabled("SolidWave");
+}
+
+void SolidWave::setEnabled(bool enabled) {
+    SettingsManager::get()->setEnabled("SolidWave", enabled);
+}
+
+void SolidWave::toggle() {
+    SettingsManager::get()->toggle("SolidWave");
+}
+
+SpeedHack* SpeedHack::get() {
+    static SpeedHack instance;
+    return &instance;
+}
+
+bool SpeedHack::getIfEnabled() {
+    return SettingsManager::get()->getIfEnabled("SpeedHack");
+}
+
+void SpeedHack::setEnabled(bool enabled) {
+    SettingsManager::get()->setEnabled("SpeedHack", enabled);
+}
+
+void SpeedHack::toggle() {
+    SettingsManager::get()->toggle("SpeedHack");
+}
+
+Noclip* Noclip::get() {
+    static Noclip instance;
+    return &instance;
+}
+
+bool Noclip::getIfEnabled() {
+    return SettingsManager::get()->getIfEnabled("Noclip");
+}
+
+void Noclip::setEnabled(bool enabled) {
+    SettingsManager::get()->setEnabled("Noclip", enabled);
+}
+
+void Noclip::toggle() {
+    SettingsManager::get()->toggle("Noclip");
+}
+
 bool UI::setup() {
     auto popupSize = this->getContentSize();
     
@@ -22,20 +107,16 @@ bool UI::setup() {
         ->setCrossAxisAlignment(AxisAlignment::Start)
         ->setGap(10.f));
     
-    if (GUINoModMenu) {
-        
-    } else {
-        addDefaultUICategoryButton("Player");
-        addDefaultUICategoryButton("Creator");
-        addDefaultUICategoryButton("Misc");
-        addDefaultUICategoryButton("Cosmetic");
-        addDefaultUICategoryButton("Settings");
-        addDefaultUICategoryButton("Credits");
-        
-        m_currentCategory = "Player";
-        this->setTitle("Player");
-        setupCategoryContent("Player");
-    }
+    addDefaultUICategoryButton("Player");
+    addDefaultUICategoryButton("Creator");
+    addDefaultUICategoryButton("Misc");
+    addDefaultUICategoryButton("Cosmetic");
+    addDefaultUICategoryButton("Settings");
+    addDefaultUICategoryButton("Credits");
+    
+    m_currentCategory = "Player";
+    this->setTitle("Player");
+    setupCategoryContent("Player");
     
     return true;
 }
@@ -73,17 +154,17 @@ void UI::onCategoryButtonPressed(CCObject* sender) {
 
 std::vector<std::string> UI::getCategoryFields(const std::string& categoryStr) {
     if (categoryStr == "Player") {
-        return { "1", "2", "3", "4" };
+        return { "Noclip", "Jump Hack" };
     } else if (categoryStr == "Creator") {
-        return { "5", "6" };
+        return { "Copy Hack" };
     } else if (categoryStr == "Misc") {
-        return { "7" };
+        return { "Show Hitboxes", "Practice Music Bypass" };
     } else if (categoryStr == "Cosmetic") {
-        return { "8" };
+        return { "Rainbow Icon" };
     } else if (categoryStr == "Settings") {
-        return { "9", "10", "11" };
+        return { "PlaceHolder" };
     } else if (categoryStr == "Credits") {
-        return { "Nothing Here." };
+        return { "Kai" };
     }
     return { "Nothing Here." };
 }
