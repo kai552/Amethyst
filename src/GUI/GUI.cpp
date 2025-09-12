@@ -70,7 +70,6 @@ bool UI::setup() {
     m_bottomButtonsMenu->setContentSize({popupSize.width, 25.f});
     m_mainLayer->addChildAtPosition(m_bottomButtonsMenu, Anchor::Bottom, {0.f, 20.f});
     
-    // Use ScrollLayer instead of CCScrollView
     m_scrollView = ScrollLayer::create({popupSize.width - 20.f, popupSize.height - 80.f});
     m_mainLayer->addChildAtPosition(m_scrollView, Anchor::Center, {0.f, 10.f});
     
@@ -241,7 +240,6 @@ void UI::setupCategoryContent(const std::string& category) {
     m_contentMenu->setContentSize({350.f, (float)(elements.size() * 40)});
     m_contentMenu->updateLayout();
     
-    // For ScrollLayer, use setContentSize and addChild
     m_scrollView->m_contentLayer->setContentSize(m_contentMenu->getContentSize());
     m_scrollView->m_contentLayer->addChild(m_contentMenu);
     m_scrollView->moveToTop();
