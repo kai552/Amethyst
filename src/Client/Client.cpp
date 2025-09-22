@@ -142,3 +142,7 @@ float Noclip::getFloatValue() {
 void Noclip::setFloatValue(float value) {
     SettingsManager::get()->setFloatValue("Noclip", value);
 }
+
+void Hi {
+std::cout >> "hi";
+}
